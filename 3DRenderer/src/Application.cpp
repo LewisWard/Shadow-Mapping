@@ -15,7 +15,7 @@ Application::Application()
 
 	m_lightPos = glm::vec3(2.5f, 5.0f, -5.0f);
 
-	m_texture = std::make_shared<gl::Texture>("textures/wood.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS);
+	m_texture = std::make_shared<gl::Texture>("textures/wood.png", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS);
 	m_sphereObject = std::make_shared<gl::ObjObject>("models/sphere.obj", "models/");
 	m_planeObject = std::make_shared<gl::ObjObject>("models/plane.obj", "models/");
 
@@ -81,7 +81,7 @@ void Application::draw()
 
 	// MVP from camera position
 	glm::mat4 model(1.0f);
-	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 5.0f, 25.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 5.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::perspective(45.0f, m_scrennSize.x / m_scrennSize.y, 0.1f, 100.0f);
 	glm::mat3 normalMatrix = glm::transpose(glm::inverse(model));
 

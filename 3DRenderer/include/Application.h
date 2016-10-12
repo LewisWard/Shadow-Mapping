@@ -35,9 +35,9 @@ private:
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, objPtr->getVertexBuffer()->getIBO());
 		glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(vertexNormalUV), offset);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, true, sizeof(vertexNormalUV), offset + 4);
+		glVertexAttribPointer(1, 3, GL_FLOAT, true, sizeof(vertexNormalUV), offset + 3);
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(2, 2, GL_FLOAT, true, sizeof(vertexNormalUV), offset + 8);
+		glVertexAttribPointer(2, 2, GL_FLOAT, true, sizeof(vertexNormalUV), offset + 6);
 		glEnableVertexAttribArray(2);
 		glDrawElements(GL_TRIANGLES, objPtr->getIndicesCount(), GL_UNSIGNED_INT, 0);
 		glDisableVertexAttribArray(2);
