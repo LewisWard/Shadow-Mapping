@@ -4,12 +4,40 @@
 #version 330
 
 uniform sampler2D texture;
+uniform sampler2D shadowMap;
+uniform mat3 normalMatrix;
+uniform mat4 modelMatrix;
+
 
 in vec2 vs_uv;
+in vec3 vs_fragpos;
+in vec3 vs_normal;
+in vec4 vs_shadowCoord;
 out vec4 output_colour;
+
+uniform struct Light
+{
+  vec3 position;
+  vec3 colour;
+
+} light; 
 
 void main()
 {
-  output_colour = texture2D(texture, vs_uv);
-}
+  vec4 diffuse = texture2D(texture, vs_uv);
+  vec3 normal = normalize(normalMatrix * vs_normal);
 
+  vec3 surfaceToLight = light.position - vs_fragpos;
+
+  float brightness = dot(normal, surfaceToLight) / (length(surfaceToLight) * length(normal));
+  brightness = clamp(brightness, 0, 1);
+
+  float bias = 0.005;
+  float visibility = 1.0;
+  if (texture2D(shadowMap, vs_shadowCoord.xy).z  <  vs_shadowCoord.z -bias)
+  {
+      visibility = 0.5;
+  }
+
+  output_colour = vec4((brightness * light.colour * diffuse.rgb) * visibility, diffuse.a);
+}

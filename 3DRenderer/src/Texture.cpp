@@ -16,7 +16,7 @@ namespace gl
 		}
 	}
 
-	Texture::Texture(int number, GLenum type, const textureDesc& desc, const GLvoid* data)
+	Texture::Texture(int number, GLenum type, const textureDesc desc, const GLvoid* data)
 	{
 		m_count = number;
 		glGenTextures(m_count, &m_id);

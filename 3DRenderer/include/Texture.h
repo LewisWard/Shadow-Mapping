@@ -49,7 +49,7 @@ namespace gl
 		/// \parma textureDesc	Texture Descriptor
 		/// \parma GLvoid* data
 		//----------------------------------------------------------------------------------------------------------------------
-		Texture(int number, GLenum type, const textureDesc& descriptor, const GLvoid* data);
+		Texture(int number, GLenum type, const textureDesc descriptor, const GLvoid* data);
 
 		//----------------------------------------------------------------------------------------------------------------------
 		/// \brief Single standard texture, uses functions from the SOIL library. See SOIL.h for enum's
