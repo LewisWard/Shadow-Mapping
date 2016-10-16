@@ -22,10 +22,11 @@ private:
 	uint32_t m_shadowFrameBuffer;
 	shared<gl::Texture> m_texture;
 	shared<gl::ObjObject> m_planeObject;
-	shared<gl::ObjObject> m_sphereObject;
+	std::vector<shared<gl::ObjObject>> m_sphereObject;
 	shared<gl::Program> m_shaderProgram;
 	shared<gl::Program> m_shadowProgram;
 	glm::vec3 m_lightPos;
+	glm::vec3 m_camera;
 	glm::vec2 m_scrennSize;
 
 	void objDrawCall(gl::ObjObject* objPtr)

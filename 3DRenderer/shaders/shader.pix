@@ -32,7 +32,12 @@ void main()
   float brightness = dot(normal, surfaceToLight) / (length(surfaceToLight) * length(normal));
   brightness = clamp(brightness, 0, 1);
 
-  float bias = 0.005;
+  // to remove shadow acne from surfaces
+  float cosTheta = dot(normal, surfaceToLight);
+  float bias = 0.005 * tan(acos(cosTheta));
+  bias = clamp(bias, 0, 0.01);
+
+  // in shadow or not
   float visibility = 1.0;
   if (texture2D(shadowMap, vs_shadowCoord.xy).z  <  vs_shadowCoord.z -bias)
   {
