@@ -5,6 +5,8 @@
 #include "glm\gtc\matrix_transform.hpp"
 #include "glm\gtx\rotate_vector.hpp"
 #include <string>
+#define SHADOWMAP_SIZE TEXTURE_HIGH
+
 
 Application::Application()
 {
@@ -14,12 +16,12 @@ Application::Application()
 	glViewport(0, 0, m_scrennSize.x, m_scrennSize.y);
 	windowRename("3D Renderer - Lewis Ward");
 
-	m_lightPos = glm::vec3(0.0f, 20.0f, -20.0f);
+	m_lightPos = glm::vec3(0.0f, 20.0f, 20.0f);
 
 	m_texture = std::make_shared<gl::Texture>("textures/wood.png", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS);
 	m_sphereObject.push_back(std::make_shared<gl::ObjObject>("models/sphere.obj", "models/"));
 	m_sphereObject.push_back(std::make_shared<gl::ObjObject>("models/cube.obj", "models/"));
-	m_planeObject = std::make_shared<gl::ObjObject>("models/plane.obj", "models/");
+	m_planeObject = std::make_shared<gl::ObjObject>("models/wallOneSide.obj", "models/");
 	glm::mat4 model(1.0f);
 	model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
 	m_sphereObject[1]->setMatrix(model);
@@ -45,17 +47,19 @@ Application::Application()
 	
 	// create shadow map texture
 	gl::textureDesc shadowMapDesc;
-	shadowMapDesc.internalFormat = GL_DEPTH_COMPONENT16;
+	shadowMapDesc.internalFormat = GL_DEPTH_COMPONENT32;
 	shadowMapDesc.format = GL_DEPTH_COMPONENT;
-	shadowMapDesc.width = RES_LOW_X;
-	shadowMapDesc.height = RES_LOW_X;
+	shadowMapDesc.width = SHADOWMAP_SIZE;
+	shadowMapDesc.height = SHADOWMAP_SIZE;
 	shadowMapDesc.type = GL_FLOAT;
-	shadowMapDesc.texParamA = GL_NEAREST;
-	shadowMapDesc.texParamB = GL_NEAREST;
+	shadowMapDesc.texParamA = GL_LINEAR;
+	shadowMapDesc.texParamB = GL_LINEAR;
 	m_shadowMap = new gl::Texture(1, GL_TEXTURE_2D, shadowMapDesc, NULL);
 	m_shadowMap->bind(1);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
 	// attach shadow map to framebuffer
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_shadowMap->getID(), 0);
@@ -160,8 +164,10 @@ void Application::draw()
 
 	// shadow pass
 	{
-		glViewport(0, 0, RES_LOW_X, RES_LOW_X);
+		glViewport(0, 0, SHADOWMAP_SIZE, SHADOWMAP_SIZE);
 		glCullFace(GL_FRONT);
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(1.0f, 1.0f);
 		m_shadowProgram->bind();
 		glBindFramebuffer(GL_FRAMEBUFFER, m_shadowFrameBuffer);
 		glClear(GL_DEPTH_BUFFER_BIT);
@@ -181,6 +187,7 @@ void Application::draw()
 		m_shadowMap->unbind();
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		m_shadowProgram->unbind();
+		glDisable(GL_POLYGON_OFFSET_FILL);
 		glCullFace(GL_BACK);
 	}
 	
