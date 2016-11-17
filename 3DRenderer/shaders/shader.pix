@@ -5,12 +5,16 @@
 
 uniform sampler2D texture;
 uniform sampler2DShadow shadowMap;
+uniform vec3 ambientColour;
 uniform mat3 normalMatrix;
 uniform mat4 modelMatrix;
 
 in vec2 vs_uv;
 in vec3 vs_fragpos;
 in vec3 vs_normal;
+in vec3 vs_position;
+in vec3 vs_lightDir;
+in vec3 vs_halfVector;
 in vec4 vs_shadowCoord;
 out vec4 output_colour;
 
@@ -18,6 +22,7 @@ uniform struct Light
 {
   vec3 position;
   vec3 colour;
+  float shininess;
 
 } light; 
 
@@ -25,6 +30,16 @@ void main()
 {
   vec4 diffuse = texture2D(texture, vs_uv);
   vec3 normal = normalize(normalMatrix * vs_normal);
+
+  // compute the amount of diffuse and specular
+  float diff = max(0.0, dot(normal, vs_lightDir));
+  float spec = max(0.0, dot(normal, vs_halfVector));
+
+  // normals that face away from the light cannot be lit
+  if(diff == 0)
+    spec = 0;
+  else
+    spec = pow(spec, light.shininess);
 
   vec3 surfaceToLight = light.position - vs_fragpos;
 
@@ -37,5 +52,12 @@ void main()
   // calulate shadow
   visibility = textureProj(shadowMap, vs_shadowCoord);
 
-  output_colour = vec4((brightness * light.colour * diffuse.rgb) * visibility, diffuse.a);
+  // compute if the light is directly or indirectly hitting the camera and clamp the results
+  vec3 scatteredLight = ambientColour + light.colour * diff;
+  vec3 reflectedLight = light.colour * spec * brightness;
+  scatteredLight = clamp(scatteredLight, 0, 1);
+  reflectedLight = clamp(reflectedLight, 0, 1);
+
+  // output colour
+  output_colour = vec4((scatteredLight * diffuse.rgb + reflectedLight) * visibility, diffuse.a);
 }

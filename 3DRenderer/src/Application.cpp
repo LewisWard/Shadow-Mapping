@@ -235,8 +235,11 @@ void Application::draw()
 		m_shaderProgram->uniformMatrix4("viewMatrix", 1, view);
 		m_shaderProgram->uniformMatrix4("projectionlMatrix", 1, projection);
 		m_shaderProgram->uniformMatrix3("normalMatrix", 1, normalMatrix);
+		m_shaderProgram->uniform3f("ambientColour", 10.0f / 255.0f, 10.0f / 255.0f, 10.0f / 255.0f);
 		m_shaderProgram->uniform3f("light.position", m_lightPos.x, m_lightPos.y, m_lightPos.z);
-		m_shaderProgram->uniform3f("light.colour", 0.5f, 0.5f, 0.6f);
+		m_shaderProgram->uniform3f("light.colour", 100.0f / 255.0f, 100.0f / 255.0f, 115.0f / 255.0f);
+		m_shaderProgram->uniform1f("light.shininess", 20.0f);
+		m_shaderProgram->uniform3f("eyePosition", m_camera.x, m_camera.y, m_camera.z);
 		objDrawCall(m_planeObject.get());
 		for (size_t i = 0; i < m_sphereObject.size(); i++)
 		{

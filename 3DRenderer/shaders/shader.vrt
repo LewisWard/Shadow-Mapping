@@ -7,6 +7,7 @@ layout(location = 0) in vec4 position; ///< the vertex co-odinate from VBO
 layout(location = 1) in vec3 normal; ///< the normal from VBO
 layout(location = 2) in vec2 uv; ///< the UV co-odinate from VBO
 
+uniform vec3 eyePosition;
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionlMatrix;
@@ -15,7 +16,17 @@ uniform mat4 depthBiasMVP;
 out vec2 vs_uv;
 out vec3 vs_fragpos;
 out vec3 vs_normal;
+out vec3 vs_position;
+out vec3 vs_lightDir;
+out vec3 vs_halfVector;
 out vec4 vs_shadowCoord;
+
+uniform struct Light
+{
+  vec3 position;
+  vec3 colour;
+  float shininess;
+} light; 
 
 void main()
 {
@@ -28,4 +39,14 @@ void main()
   vs_normal = normal;
   vs_fragpos = worldPos.xyz;
   vs_shadowCoord = depthBiasMVP * position;
+
+  // compute the light direction and length
+  vec3 lightDir = vec3(light.position - worldPos.xyz);
+  float lightDis = length(lightDir);
+
+  // basically the same as doing normalize
+  vs_lightDir = lightDir / lightDis;
+
+  // compute the half vector
+  vs_halfVector = normalize(lightDir + eyePosition);
 }
