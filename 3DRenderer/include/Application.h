@@ -41,7 +41,7 @@ private:
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(2, 2, GL_FLOAT, true, sizeof(vertexNormalUV), offset + 6);
 		glEnableVertexAttribArray(2);
-		glDrawElements(GL_TRIANGLES, objPtr->getIndicesCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, (GLsizei)objPtr->getIndicesCount(), GL_UNSIGNED_INT, 0);
 		glDisableVertexAttribArray(2);
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(0);

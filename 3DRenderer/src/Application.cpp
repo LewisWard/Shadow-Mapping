@@ -12,8 +12,8 @@ Application::Application()
 {
 	m_scrennSize.x = RES_LOW_X;
 	m_scrennSize.y = RES_LOW_Y;
-	onResize(m_scrennSize.x, m_scrennSize.y);
-	glViewport(0, 0, m_scrennSize.x, m_scrennSize.y);
+	onResize((int)m_scrennSize.x, (int)m_scrennSize.y);
+	glViewport(0, 0, (size_t)m_scrennSize.x, (size_t)m_scrennSize.y);
 	windowRename("3D Renderer - Lewis Ward");
 
 	m_lightPos = glm::vec3(-0.2f, 20.0f, 20.0f);
@@ -221,7 +221,7 @@ void Application::draw()
 	
 	// normal pass
 	{
-		glViewport(0, 0, m_scrennSize.x, m_scrennSize.y);
+		glViewport(0, 0, (size_t)m_scrennSize.x, (size_t)m_scrennSize.y);
 		// draw start
 		m_shaderProgram->bind();
 		m_texture->bind(1);
