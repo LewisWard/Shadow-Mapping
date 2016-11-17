@@ -19,15 +19,16 @@ public:
 
 private:
 	gl::Texture* m_shadowMap;
-	uint32_t m_shadowFrameBuffer;
+	std::vector<shared<gl::ObjObject>> m_sphereObject;
 	shared<gl::Texture> m_texture;
 	shared<gl::ObjObject> m_planeObject;
-	std::vector<shared<gl::ObjObject>> m_sphereObject;
 	shared<gl::Program> m_shaderProgram;
 	shared<gl::Program> m_shadowProgram;
 	glm::vec3 m_lightPos;
 	glm::vec3 m_camera;
 	glm::vec2 m_scrennSize;
+	uint32_t m_shadowFrameBuffer;
+	float m_polyOffset;
 
 	void objDrawCall(gl::ObjObject* objPtr)
 	{

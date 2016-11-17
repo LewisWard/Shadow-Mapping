@@ -5,7 +5,7 @@
 #include "glm\gtc\matrix_transform.hpp"
 #include "glm\gtx\rotate_vector.hpp"
 #include <string>
-#define SHADOWMAP_SIZE TEXTURE_HIGH
+#define SHADOWMAP_SIZE TEXTURE_MEDIUM
 
 
 Application::Application()
@@ -16,15 +16,26 @@ Application::Application()
 	glViewport(0, 0, m_scrennSize.x, m_scrennSize.y);
 	windowRename("3D Renderer - Lewis Ward");
 
-	m_lightPos = glm::vec3(0.0f, 20.0f, 20.0f);
+	m_lightPos = glm::vec3(-0.2f, 20.0f, 20.0f);
 
+#if RELEASEINBUILD
+	m_texture = std::make_shared<gl::Texture>("textures/wood.png", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS);
+	m_sphereObject.push_back(std::make_shared<gl::ObjObject>("models/sphere.obj", "models/"));
+	m_sphereObject.push_back(std::make_shared<gl::ObjObject>("models/FinalBaseMesh.obj", "models/"));
+	m_planeObject = std::make_shared<gl::ObjObject>("models/plane.obj", "models/");
+	glm::mat4 model(1.0f);
+	model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.5f));
+	m_sphereObject[1]->setMatrix(model);
+#else
 	m_texture = std::make_shared<gl::Texture>("textures/wood.png", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS);
 	m_sphereObject.push_back(std::make_shared<gl::ObjObject>("models/sphere.obj", "models/"));
 	m_sphereObject.push_back(std::make_shared<gl::ObjObject>("models/cube.obj", "models/"));
-	m_planeObject = std::make_shared<gl::ObjObject>("models/wallOneSide.obj", "models/");
+	m_planeObject = std::make_shared<gl::ObjObject>("models/plane.obj", "models/");
 	glm::mat4 model(1.0f);
-	model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(3.0f, 3.0f, 0.0f));
 	m_sphereObject[1]->setMatrix(model);
+#endif
 	
 
 	glEnable(GL_DEPTH_TEST);
@@ -47,7 +58,7 @@ Application::Application()
 	
 	// create shadow map texture
 	gl::textureDesc shadowMapDesc;
-	shadowMapDesc.internalFormat = GL_DEPTH_COMPONENT32;
+	shadowMapDesc.internalFormat = GL_DEPTH_COMPONENT;
 	shadowMapDesc.format = GL_DEPTH_COMPONENT;
 	shadowMapDesc.width = SHADOWMAP_SIZE;
 	shadowMapDesc.height = SHADOWMAP_SIZE;
@@ -69,7 +80,9 @@ Application::Application()
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		printf("Framebuffer Error\n");
 
-	m_camera = glm::vec3(0.0f, 5.0f, 10.0f);
+	m_camera = glm::vec3(0.0f, 9.0f, 20.0f);
+
+	m_polyOffset = 1.0f;
 }
 
 Application::~Application()
@@ -83,46 +96,63 @@ Application::~Application()
 
 void Application::update(float& dt)
 {
+	int cube = 1;
+
 	if (isKeyPressed('w'))
 	{
 		float movement = 1.0f * dt;
-		glm::mat4 m = glm::translate(m_sphereObject[1]->getMatrix(), glm::vec3(0.0f, movement, 0.0f));
-		m_sphereObject[1]->setMatrix(m);
+		glm::mat4 m = glm::translate(m_sphereObject[cube]->getMatrix(), glm::vec3(0.0f, movement, 0.0f));
+		m_sphereObject[cube]->setMatrix(m);
 	}
 	if (isKeyPressed('s'))
 	{
 		float movement = 1.0f * dt;
-		glm::mat4 m = glm::translate(m_sphereObject[1]->getMatrix(), glm::vec3(0.0f, -movement, 0.0f));
-		m_sphereObject[1]->setMatrix(m);
+		glm::mat4 m = glm::translate(m_sphereObject[cube]->getMatrix(), glm::vec3(0.0f, -movement, 0.0f));
+		m_sphereObject[cube]->setMatrix(m);
 	}
 
 	if (isKeyPressed('a'))
 	{
 		float movement = 1.0f * dt;
-		glm::mat4 m = glm::translate(m_sphereObject[1]->getMatrix(), glm::vec3(movement, 0.0f, 0.0f));
-		m_sphereObject[1]->setMatrix(m);
+		glm::mat4 m = glm::translate(m_sphereObject[cube]->getMatrix(), glm::vec3(movement, 0.0f, 0.0f));
+		m_sphereObject[cube]->setMatrix(m);
 	}
 	if (isKeyPressed('d'))
 	{
 		float movement = 1.0f * dt;
-		glm::mat4 m = glm::translate(m_sphereObject[1]->getMatrix(), glm::vec3(-movement, 0.0f, 0.0f));
-		m_sphereObject[1]->setMatrix(m);
+		glm::mat4 m = glm::translate(m_sphereObject[cube]->getMatrix(), glm::vec3(-movement, 0.0f, 0.0f));
+		m_sphereObject[cube]->setMatrix(m);
 	}
 
 	if (isKeyPressed('q'))
 	{
 		float movement = 1.0f * dt;
-		glm::mat4 m = glm::translate(m_sphereObject[1]->getMatrix(), glm::vec3(0.0f, 0.0f, movement));
-		m_sphereObject[1]->setMatrix(m);
+		glm::mat4 m = glm::translate(m_sphereObject[cube]->getMatrix(), glm::vec3(0.0f, 0.0f, movement));
+		m_sphereObject[cube]->setMatrix(m);
 	}
 	if (isKeyPressed('e'))
 	{
 		float movement = 1.0f * dt;
-		glm::mat4 m = glm::translate(m_sphereObject[1]->getMatrix(), glm::vec3(0.0f, 0.0f, -movement));
-		m_sphereObject[1]->setMatrix(m);
+		glm::mat4 m = glm::translate(m_sphereObject[cube]->getMatrix(), glm::vec3(0.0f, 0.0f, -movement));
+		m_sphereObject[cube]->setMatrix(m);
+	}
+
+	if (isKeyPressed('i'))
+	{
+		m_polyOffset += 1.0f * dt;
+		std::cout << m_polyOffset << std::endl;
+	}
+
+	if (isKeyPressed('k'))
+	{
+		m_polyOffset -= 1.0f * dt;
+		if (m_polyOffset <= 0.0f)
+			m_polyOffset = 0.0f;
+		std::cout << m_polyOffset << std::endl;
 	}
 
 	static bool rotateToggle = false;
+	static bool ployToggle = false;
 
 	if (isKeyPressed('x'))
 		rotateToggle = true;
@@ -147,7 +177,7 @@ void Application::draw()
 	glm::mat3 normalMatrix = glm::transpose(glm::inverse(model));
 
 	// MVP from light poisition
-	glm::mat4 depthProjection = glm::ortho<float>(25.0f, -25.0f, -25.0f, 25.0f, 0.1f, 100);
+	glm::mat4 depthProjection = glm::perspective(45.0f, m_scrennSize.x / m_scrennSize.y, 0.1f, 100.0f);
 	glm::mat4 depthView = glm::lookAt(m_lightPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 depthModel = glm::mat4(1.0);
 	glm::mat4 depthMVP = depthProjection * depthView * depthModel;
@@ -165,9 +195,8 @@ void Application::draw()
 	// shadow pass
 	{
 		glViewport(0, 0, SHADOWMAP_SIZE, SHADOWMAP_SIZE);
-		glCullFace(GL_FRONT);
 		glEnable(GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(1.0f, 1.0f);
+		glPolygonOffset(m_polyOffset, m_polyOffset);
 		m_shadowProgram->bind();
 		glBindFramebuffer(GL_FRAMEBUFFER, m_shadowFrameBuffer);
 		glClear(GL_DEPTH_BUFFER_BIT);
@@ -188,7 +217,6 @@ void Application::draw()
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		m_shadowProgram->unbind();
 		glDisable(GL_POLYGON_OFFSET_FILL);
-		glCullFace(GL_BACK);
 	}
 	
 	// normal pass
@@ -207,7 +235,7 @@ void Application::draw()
 		m_shaderProgram->uniformMatrix4("viewMatrix", 1, view);
 		m_shaderProgram->uniformMatrix4("projectionlMatrix", 1, projection);
 		m_shaderProgram->uniformMatrix3("normalMatrix", 1, normalMatrix);
-		m_shaderProgram->uniform3f("light.position", 20.0f, 10.0f, 0.0f);
+		m_shaderProgram->uniform3f("light.position", m_lightPos.x, m_lightPos.y, m_lightPos.z);
 		m_shaderProgram->uniform3f("light.colour", 0.5f, 0.5f, 0.6f);
 		objDrawCall(m_planeObject.get());
 		for (size_t i = 0; i < m_sphereObject.size(); i++)

@@ -8,7 +8,6 @@ uniform sampler2DShadow shadowMap;
 uniform mat3 normalMatrix;
 uniform mat4 modelMatrix;
 
-
 in vec2 vs_uv;
 in vec3 vs_fragpos;
 in vec3 vs_normal;
@@ -32,20 +31,11 @@ void main()
   float brightness = dot(normal, surfaceToLight) / (length(surfaceToLight) * length(normal));
   brightness = clamp(brightness, 0, 1);
 
-  // create a bias to remove shadow acne from surfaces
-  float cosTheta = dot(normal, surfaceToLight);
-  float bias = 0.005 * tan(acos(cosTheta));
-  bias = clamp(bias, 0, 0.005);
-
   // in shadow or not
   float visibility = 1.0;
-  
-  // apply a bais to the shadow coords
-  vec4 shadowCoord = vec4(vs_shadowCoord);
-  shadowCoord.z = shadowCoord.z - bias;
 
   // calulate shadow
-  visibility = textureProj(shadowMap, shadowCoord, bias);
+  visibility = textureProj(shadowMap, vs_shadowCoord);
 
   output_colour = vec4((brightness * light.colour * diffuse.rgb) * visibility, diffuse.a);
 }
