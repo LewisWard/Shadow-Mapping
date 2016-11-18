@@ -21,6 +21,7 @@ private:
 	gl::Texture* m_shadowMap;
 	std::vector<shared<gl::ObjObject>> m_sphereObject;
 	shared<gl::Texture> m_texture;
+	shared<gl::Texture> m_textureSecondary;
 	shared<gl::ObjObject> m_planeObject;
 	shared<gl::Program> m_shaderProgram;
 	shared<gl::Program> m_shadowProgram;

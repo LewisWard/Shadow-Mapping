@@ -5,6 +5,7 @@
 
 uniform sampler2D texture;
 uniform sampler2DShadow shadowMap;
+uniform vec3 gammaCorrectness;
 uniform vec3 ambientColour;
 uniform mat3 normalMatrix;
 uniform mat4 modelMatrix;
@@ -58,6 +59,12 @@ void main()
   scatteredLight = clamp(scatteredLight, 0, 1);
   reflectedLight = clamp(reflectedLight, 0, 1);
 
+  vec3 finalColour = vec3((scatteredLight * diffuse.rgb + reflectedLight) * visibility);
+
+  // apply gamma correctness
+  vec3 gamma = vec3(gammaCorrectness);
+  finalColour = pow(finalColour, gamma);
+
   // output colour
-  output_colour = vec4((scatteredLight * diffuse.rgb + reflectedLight) * visibility, diffuse.a);
+  output_colour = vec4(finalColour, diffuse.a);
 }
