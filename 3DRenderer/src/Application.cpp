@@ -19,11 +19,11 @@ Application::Application()
 	m_lightPos = glm::vec3(-3.0f, 20.0f, 20.0f);
 
 #if RELEASEINBUILD
-	m_texture = std::make_shared<gl::Texture>("textures/wood.png", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS);
-	m_textureSecondary = std::make_shared<gl::Texture>("textures/cobblestone.png", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS);
-	m_sphereObject.push_back(std::make_shared<gl::ObjObject>("models/sphere.obj", "models/"));
-	m_sphereObject.push_back(std::make_shared<gl::ObjObject>("models/FinalBaseMesh.obj", "models/"));
-	m_planeObject = std::make_shared<gl::ObjObject>("models/plane.obj", "models/");
+	m_texture = std::make_shared<gl::Texture>(ASSET_DIR"/textures/wood.png", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS);
+	m_textureSecondary = std::make_shared<gl::Texture>(ASSET_DIR"/textures/cobblestone.png", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS);
+	m_sphereObject.push_back(std::make_shared<gl::ObjObject>(ASSET_DIR"/models/sphere.obj", "models/"));
+	m_sphereObject.push_back(std::make_shared<gl::ObjObject>(ASSET_DIR"/models/FinalBaseMesh.obj", "models/"));
+	m_planeObject = std::make_shared<gl::ObjObject>(ASSET_DIR"/models/plane.obj", "models/");
 
 	glm::mat4 model(1.0f);
 	model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
@@ -34,13 +34,13 @@ Application::Application()
 	m_sphereObject[1]->setLinkedTexture(m_texture.get());
 	m_planeObject->setLinkedTexture(m_textureSecondary.get());
 #else
-	m_texture = std::make_shared<gl::Texture>("textures/wood.png", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS);
-	m_textureSecondary = std::make_shared<gl::Texture>("textures/cobblestone.png", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS);
-	m_sphereObject.push_back(std::make_shared<gl::ObjObject>("models/sphere.obj", "models/"));
-	m_sphereObject.push_back(std::make_shared<gl::ObjObject>("models/cube.obj", "models/"));
-	m_sphereObject.push_back(std::make_shared<gl::ObjObject>("models/sphere.obj", "models/"));
-	m_sphereObject.push_back(std::make_shared<gl::ObjObject>("models/cube.obj", "models/"));
-	m_planeObject = std::make_shared<gl::ObjObject>("models/plane.obj", "models/");
+	m_texture = std::make_shared<gl::Texture>(ASSET_DIR"/textures/wood.png", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS);
+	m_textureSecondary = std::make_shared<gl::Texture>(ASSET_DIR"/textures/cobblestone.png", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS);
+	m_sphereObject.push_back(std::make_shared<gl::ObjObject>(ASSET_DIR"/models/sphere.obj", "models/"));
+	m_sphereObject.push_back(std::make_shared<gl::ObjObject>(ASSET_DIR"/models/cube.obj", "models/"));
+	m_sphereObject.push_back(std::make_shared<gl::ObjObject>(ASSET_DIR"/models/sphere.obj", "models/"));
+	m_sphereObject.push_back(std::make_shared<gl::ObjObject>(ASSET_DIR"/models/cube.obj", "models/"));
+	m_planeObject = std::make_shared<gl::ObjObject>(ASSET_DIR"/models/plane.obj", "models/");
 
 	glm::mat4 model(1.0f);
 	model = glm::translate(model, glm::vec3(4.5f, 2.75f, 1.5f));
@@ -68,11 +68,11 @@ Application::Application()
 	glEnable(GL_TEXTURE_2D);
 	glCullFace(GL_BACK);
 
-	gl::Shader vertexShader("shaders/shader.vrt", kVertexShader);
-	gl::Shader pixelShader("shaders/shader.pix", kPixelShader);
+	gl::Shader vertexShader(ASSET_DIR"/shaders/shader.vrt", kVertexShader);
+	gl::Shader pixelShader(ASSET_DIR"/shaders/shader.pix", kPixelShader);
 	m_shaderProgram = std::make_shared<gl::Program>(vertexShader, pixelShader);
-	gl::Shader vertexShadow("shaders/shadow.vrt", kVertexShader);
-	gl::Shader pixelShadow("shaders/shadow.pix", kPixelShader);
+	gl::Shader vertexShadow(ASSET_DIR"/shaders/shadow.vrt", kVertexShader);
+	gl::Shader pixelShadow(ASSET_DIR"/shaders/shadow.pix", kPixelShader);
 	m_shadowProgram = std::make_shared<gl::Program>(vertexShadow, pixelShadow);
 
 

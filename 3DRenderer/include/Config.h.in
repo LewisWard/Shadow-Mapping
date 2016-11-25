@@ -1,0 +1,4 @@
+// the configured options
+#define APPLICATION_VERSION_MAJOR @ShadowMapping_VERSION_MAJOR@
+#define APPLICATION_VERSION_MINOR @ShadowMapping_VERSION_MINOR@
+#define ASSET_DIR "@ShadowMapping_ASSET_DIR@"

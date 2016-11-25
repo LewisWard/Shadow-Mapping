@@ -8,6 +8,7 @@
 #include "gl/freeglut_ext.h"
 #include "glFunctions.h"
 #include "soil/SOIL.h"
+#include "Config.h"
 #include <Windows.h>
 #include <iostream>
 static int windowOldWidth = 0;
@@ -142,6 +143,6 @@ void cleanup();
 //----------------------------------------------------------------------------------------------------------------------
 /// \brief  MAIN ENETRY POINT! called from main(), calls glut functions.
 //----------------------------------------------------------------------------------------------------------------------
-int run();
+int run(int argc, char* argv[]);
 
 
