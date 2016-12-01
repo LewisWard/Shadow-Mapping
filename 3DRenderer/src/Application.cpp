@@ -203,7 +203,7 @@ void Application::draw()
 	glm::mat3 normalMatrix = glm::transpose(glm::inverse(model));
 
 	// MVP from light poisition
-	glm::mat4 depthProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
+	glm::mat4 depthProjection = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, 0.1f, 100.0f);
 	glm::mat4 depthView = glm::lookAt(m_lightPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 depthModel = glm::mat4(1.0);
 	glm::mat4 depthMVP = depthProjection * depthView * depthModel;
