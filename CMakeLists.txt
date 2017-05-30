@@ -1,10 +1,10 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.4.3)
 project (ShadowMapping)
 
 # the version number.
 set (ShadowMapping_VERSION_MAJOR 1)
-set (ShadowMapping_VERSION_MINOR 2)
-set (ShadowMapping_ASSET_DIR "../")
+set (ShadowMapping_VERSION_MINOR 3)
+set (ShadowMapping_ASSET_DIR "../assets/")
 
 # if Visual Studio
 if(MSVC)
@@ -23,10 +23,14 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/3DRenderer/include/Config.h"
   )
 
+# copy asset directory to build directory
+file(COPY 3DRenderer/assets DESTINATION ${CMAKE_BINARY_DIR})
+
 # set source files
-file(GLOB FREEGLUT ${PROJECT_SOURCE_DIR}/3DRenderer/include/freeglut/src/*.c)
-file(GLOB SOIL_SOURCE ${PROJECT_SOURCE_DIR}/3DRenderer/include/soil/*.c)
-file(GLOB SOIL_HEADERS ${PROJECT_SOURCE_DIR}/3DRenderer/include/soil/*.h)
+file(GLOB FREEGLUT_FILES ${PROJECT_SOURCE_DIR}/3DRenderer/include/freeglut/src/*.c)
+file(GLOB SOIL_FILES 
+"${PROJECT_SOURCE_DIR}/3DRenderer/include/soil/*.c"
+"${PROJECT_SOURCE_DIR}/3DRenderer/include/soil/*.h")
 
 # add the executable
 add_executable(ShadowMapping ${PROJECT_SOURCE_DIR}/3DRenderer/src/Main.cpp
@@ -51,6 +55,8 @@ add_executable(ShadowMapping ${PROJECT_SOURCE_DIR}/3DRenderer/src/Main.cpp
 			     ${PROJECT_SOURCE_DIR}/3DRenderer/include/VertexBuffer.h
 			     ${PROJECT_SOURCE_DIR}/3DRenderer/include/Window.h
 			     ${PROJECT_SOURCE_DIR}/3DRenderer/include/Config.h
-			     ${FREEGLUT}
-			     ${SOIL_SOURCE}
-			     ${SOIL_HEADERS})
+			     ${FREEGLUT_FILES}
+			     ${SOIL_FILES})
+# set folders in IDE
+source_group("FreeGlut" FILES ${FREEGLUT_FILES})
+source_group("Soil" FILES ${SOIL_FILES})

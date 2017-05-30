@@ -33,3 +33,4 @@ Create a directory called 'build' in 3DRenderer, afterwards you should have: 3DR
 ## Controls ##
 Moveable cube: Q/E/W/A/S/D
 Rotate camera: X
+Esc: Quit
