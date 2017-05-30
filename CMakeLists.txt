@@ -3,8 +3,8 @@ project (ShadowMapping)
 
 # the version number.
 set (ShadowMapping_VERSION_MAJOR 1)
-set (ShadowMapping_VERSION_MINOR 1)
-set (ShadowMapping_ASSET_DIR "${PROJECT_SOURCE_DIR}/3DRenderer")
+set (ShadowMapping_VERSION_MINOR 2)
+set (ShadowMapping_ASSET_DIR "../")
 
 # if Visual Studio
 if(MSVC)

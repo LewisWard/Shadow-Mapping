@@ -2,11 +2,13 @@
 
 Project: Shadow Mapping
 
-Version: 1.1
+Version: 1.2
 
 Author: Lewis Ward
 
 ## How to get set up ##
+Create a directory called 'build' in 3DRenderer, afterwards you should have: 3DRenderer/build 
+
 
 ###Building the project (cmake cmd)###
 1. go to 3DRenderer/build
@@ -27,3 +29,7 @@ Author: Lewis Ward
 
 3. Click 'Generate' and now if you go to 3DRenderer/build you should see a visual studio project "ShadowMapping.sln", open this VS solution.
 4. Follow from 'Building the project (cmake cmd)' step 4.
+
+## Controls ##
+Moveable cube: Q/E/W/A/S/D
+Rotate camera: X
